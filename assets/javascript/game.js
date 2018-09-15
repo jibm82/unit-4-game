@@ -62,14 +62,14 @@ var game = {
 
                 if (game.isCurrentEnemyDefeated()) {
                     var message = 'You defeated ' + game.currentEnemy.name;
-                    game.writeMessage(message, "player", true);
+                    game.writeMessage(message, "player", false);
 
                     game.currentEnemy = undefined;
                     game.setPlaceholder($("#enemy"));
 
                 } else if (game.isPlayerDefeated()) {
                     var message = 'You were defeated by ' + game.currentEnemy.name;
-                    game.writeMessage(message, "enemy", true);
+                    game.writeMessage(message, "enemy", false);
 
                     game.hero = undefined;
                     game.setPlaceholder($("#hero"));
@@ -161,6 +161,8 @@ var game = {
         this.currentEnemy.healthPoints -= damage;
         this.hero.currentAttackPower += this.hero.attackPower;
 
+        this.updateCharacterHealthPoints($("#enemy"), this.currentEnemy.healthPoints);
+
         var message = "You attacked " + this.currentEnemy.name + " for " + damage + " damage";
         game.writeMessage(message, "player", true);
     },
@@ -168,6 +170,9 @@ var game = {
     enemyAttack: function () {
         var damage = this.currentEnemy.counterAttackPower;
         this.hero.healthPoints -= damage;
+
+        this.updateCharacterHealthPoints($("#hero"), this.hero.healthPoints);
+
         var message = this.currentEnemy.name + " attacked you for " + damage + " damage";
         game.writeMessage(message, "enemy", false);
     },
@@ -200,7 +205,7 @@ var game = {
     },
 
     characterHeader: function (character) {
-        return $("<h3>").html(character.name + " - HP <span>" + character.healthPoints + "</span>");
+        return $("<h3>").html(character.name + " - HP <span class='hp'>" + character.healthPoints + "</span>");
     },
 
     characterImage: function (character, version) {
@@ -245,6 +250,10 @@ var game = {
                 clearInterval(interval);
             }
         }, 30);
+    },
+
+    updateCharacterHealthPoints: function (container, healthPoints) {
+        container.find("span").text(healthPoints);
     },
 
     writeMessage: function (text, messageClass, wipeMessages) {
