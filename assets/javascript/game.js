@@ -33,7 +33,6 @@ var game = {
     ui: {
         imagesDirectory: 'assets/images/'
     },
-    selectableEnemies: [],
 
     new: function () {
 
@@ -81,6 +80,7 @@ var game = {
                 }
 
                 if (game.isGameOver()) {
+                    $("#characters .character").remove();
                     $("#attack").addClass("hidden");
                     $("#reset").removeClass("hidden");
                     var message = 'Press the reset button to start a new game'
