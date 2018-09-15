@@ -74,7 +74,18 @@ var game = {
                     game.hero = undefined;
                     game.setPlaceholder($("#hero"));
                 }
+
+                if (game.isGameOver()) {
+                    $("#attack").addClass("hidden");
+                    $("#reset").removeClass("hidden");
+                    var message = 'Press the reset button to start a new game'
+                    game.writeMessage(message, "", false);
+                }
             }
+        });
+
+        $("#reset").click(function () {
+            game.reset();
         });
     },
 
@@ -91,6 +102,7 @@ var game = {
         this.writeMessage("Choose your hero", "big", true);
 
         $('.character').remove();
+        $('.action').addClass("hidden");
         $.each(this.characters, function (index, character) {
             $("#characters").append(game.characterCover(index, character));
         });
@@ -166,6 +178,10 @@ var game = {
 
     isCurrentEnemyDefeated: function () {
         return this.currentEnemy.healthPoints <= 0;
+    },
+
+    isGameOver: function () {
+        return this.hero === undefined || this.selectableEnemies.size === 0;
     },
 
     /*UI methods*/

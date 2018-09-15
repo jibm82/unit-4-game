@@ -11,6 +11,12 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    /* Prevent text selection */
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; 
 }
 
 canvas {
@@ -50,13 +56,12 @@ img {
     margin: 10px 0px;
 }
 
-#attack {
+.action {
     box-sizing: border-box;
     border: 1px solid white;
     cursor: pointer;
     font-size: 22px;
     line-height: 98px;
-    margin-right: 10px;
     text-align: center;
     width: 100px;
 }
