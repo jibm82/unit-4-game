@@ -3,35 +3,33 @@ var game = {
         {
             name: 'Luke',
             slug: 'luke',
-            healthPoints: 110,
-            attackPower: 15,
-            counterAttackPower: 5
+            healthPoints: 100,
+            attackPower: 14,
+            counterAttackPower: 10
         },
         {
             name: 'Yoda',
             slug: 'yoda',
-            healthPoints: 120,
+            healthPoints: 140,
             attackPower: 8,
-            counterAttackPower: 10
+            counterAttackPower: 30
         },
         {
             name: 'Vader',
             slug: 'vader',
             healthPoints: 170,
-            attackPower: 10,
-            counterAttackPower: 25
+            attackPower: 8,
+            counterAttackPower: 20
         },
         {
             name: 'Darth Sidious',
             slug: 'darth-sidious',
-            healthPoints: 150,
-            attackPower: 10,
-            counterAttackPower: 20
+            healthPoints: 120,
+            attackPower: 12,
+            counterAttackPower: 15
         }
     ],
 
-    currentEnemy: undefined,
-    playerCharacter: undefined,
     ui: {
         imagesDirectory: 'assets/images/'
     },
@@ -58,16 +56,23 @@ var game = {
         $("#attack").click(function () {
             if (game.hero !== undefined && game.currentEnemy !== undefined) {
                 game.playerAttack();
-                game.enemyAttack();
-
                 if (game.isCurrentEnemyDefeated()) {
                     var message = 'You defeated ' + game.currentEnemy.name;
+
+                    if (game.selectableEnemies.length > 0) {
+                        message += ", choose another enemy";
+                    } else {
+                        message += ", you win";
+                    }
                     game.writeMessage(message, "player", false);
 
                     game.currentEnemy = undefined;
                     game.setPlaceholder($("#enemy"));
+                } else {
+                    game.enemyAttack();
+                }
 
-                } else if (game.isPlayerDefeated()) {
+                if (game.isPlayerDefeated()) {
                     var message = 'You were defeated by ' + game.currentEnemy.name;
                     game.writeMessage(message, "enemy", false);
 
@@ -92,7 +97,7 @@ var game = {
     reset: function () {
         // Variables reset
         this.currentEnemy = undefined;
-        this.playerCharacter = undefined;
+        this.hero = undefined;
         this.selectableEnemies = [];
 
         // UI reset
@@ -125,7 +130,6 @@ var game = {
         this.hero = this.cloneCharacter(character);
         this.hero.currentAttackPower = this.hero.attackPower;
         this.displayHero();
-        console.log("You selected " + this.hero.name);
     },
 
     findCharacterInArray: function (slug, stack) {
@@ -186,7 +190,7 @@ var game = {
     },
 
     isGameOver: function () {
-        return this.hero === undefined || this.selectableEnemies.size === 0;
+        return this.hero === undefined || (this.selectableEnemies.length === 0 && this.currentEnemy === undefined);
     },
 
     /*UI methods*/

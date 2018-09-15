@@ -38,8 +38,16 @@ img {
     width: 100%;
 }
 
+#logo {
+    display: block;
+    width: 200px;
+    margin: 0 auto 30px;
+}
+
 #combat-area {
     display: flex;
+    padding: 0px 10px;
+    text-shadow: 2px 2px #111;
 }
 
 #hero,
@@ -56,9 +64,14 @@ img {
     margin: 10px 0px;
 }
 
+.action, #messages {
+    border: 1px solid  #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+}
+
+
 .action {
     box-sizing: border-box;
-    border: 1px solid white;
     cursor: pointer;
     font-size: 22px;
     line-height: 98px;
@@ -67,7 +80,6 @@ img {
 }
 
 #messages {
-    border: 1px solid white;
     display: flex;
     flex: 1;
     flex-direction: column;
