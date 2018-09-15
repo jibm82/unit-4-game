@@ -2,3 +2,78 @@ html,
 body {
     height: 100%;
 }
+
+body {
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+canvas {
+    position: absolute;
+    height: 100%;
+    top: 0px;
+    width: 100%;
+    z-index: -1;
+}
+
+main {
+    margin: 0 auto;
+}
+
+h3 {
+    margin-bottom: 10px;
+}
+
+
+img {
+    width: 100%;
+}
+
+#combat-area {
+    display: flex;
+}
+
+#hero,
+#enemy {
+    flex: 1;
+}
+
+#enemy h3{
+    text-align: right;
+}
+
+
+#character-selection h2,
+#character-stats {
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+}
+
+#characters {
+    display: flex;
+}
+
+#characters .character{
+    border: 1px solid #222;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#characters img {
+    width: 80px;
+    opacity: 0.8;
+}
+
+#characters img:hover {
+    opacity: 1;
+}
+
+/* Utility classes */
+
+.hidden {
+    display: none;
+}
