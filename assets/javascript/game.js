@@ -3,30 +3,30 @@ var game = {
         {
             name: 'Luke',
             slug: 'luke',
-            healthPoints: 120,
-            attackPower: 10,
-            counterAttackPower: 10
+            healthPoints: 110,
+            attackPower: 15,
+            counterAttackPower: 5
         },
         {
             name: 'Yoda',
             slug: 'yoda',
-            healthPoints: 100,
-            attackPower: 10,
-            counterAttackPower: 20
+            healthPoints: 120,
+            attackPower: 8,
+            counterAttackPower: 10
         },
         {
             name: 'Vader',
             slug: 'vader',
-            healthPoints: 100,
+            healthPoints: 170,
             attackPower: 10,
-            counterAttackPower: 50
+            counterAttackPower: 25
         },
         {
             name: 'Darth Sidious',
             slug: 'darth-sidious',
-            healthPoints: 100,
+            healthPoints: 150,
             attackPower: 10,
-            counterAttackPower: 50
+            counterAttackPower: 20
         }
     ],
 
@@ -39,11 +39,7 @@ var game = {
 
     new: function () {
 
-        $('.character').remove();
-
-        $.each(this.characters, function (index, character) {
-            $("#characters").append(game.characterCover(index, character));
-        });
+        this.reset();
 
         $("#characters").on("click", ".character", function () {
             var slug = $(this).data("slug");
@@ -51,6 +47,7 @@ var game = {
             if (game.hero === undefined) {
                 game.selectHero(slug);
                 game.populateSelectableEnemies();
+                game.writeMessage("Choose your enemy", "big", true);
                 $(this).remove();
             } else if (game.currentEnemy === undefined) {
                 game.selectEnemy(slug);
@@ -58,40 +55,45 @@ var game = {
             }
         });
 
-        $("#characters").on("mouseover", ".character", function () {
-            if (game.hero === undefined || game.currentEnemy === undefined) {
-                var stats = $(this).data("name") + " - HP " + $(this).data("hp");
-                $("#character-stats").text(stats);
-            }
-        });
-
-        $("#characters").on("mouseout", ".character", function () {
-            $("#character-stats").text("");
-        });
-
         $("#attack").click(function () {
-            if (game.playerCharacter !== undefined && game.currentEnemy !== undefined) {
+            if (game.hero !== undefined && game.currentEnemy !== undefined) {
                 game.playerAttack();
                 game.enemyAttack();
 
                 if (game.isCurrentEnemyDefeated()) {
-                    console.log('You defeated ' + game.currentEnemy.name);
-                    game.currentEnemy = undefined;
-                    $("#current-enemy-container .character").remove();
-                } else if (game.isPlayerDefeated()) {
-                    console.log('You loose');
-                    game.playerCharacter = undefined;
-                } else {
+                    var message = 'You defeated ' + game.currentEnemy.name;
+                    game.writeMessage(message, "player", true);
 
+                    game.currentEnemy = undefined;
+                    game.setPlaceholder($("#enemy"));
+
+                } else if (game.isPlayerDefeated()) {
+                    var message = 'You were defeated by ' + game.currentEnemy.name;
+                    game.writeMessage(message, "enemy", true);
+
+                    game.hero = undefined;
+                    game.setPlaceholder($("#hero"));
                 }
             }
         });
     },
 
     reset: function () {
+        // Variables reset
         this.currentEnemy = undefined;
         this.playerCharacter = undefined;
         this.selectableEnemies = [];
+
+        // UI reset
+        this.setPlaceholder($("#hero"));
+        this.setPlaceholder($("#enemy"));
+
+        this.writeMessage("Choose your hero", "big", true);
+
+        $('.character').remove();
+        $.each(this.characters, function (index, character) {
+            $("#characters").append(game.characterCover(index, character));
+        });
     },
 
     cloneCharacter: function (character) {
@@ -138,26 +140,28 @@ var game = {
         this.selectableEnemies = this.selectableEnemies.filter(function (enemy) {
             return game.currentEnemy.name !== enemy.name;
         });
-
-        console.log("You choose to fight " + this.currentEnemy.name);
+        $("#attack").removeClass("hidden");
+        game.writeMessage("FIGHT", "big", true);
     },
 
     playerAttack: function () {
-        var damage = this.playerCharacter.currentAttackPower;
+        var damage = this.hero.currentAttackPower;
         this.currentEnemy.healthPoints -= damage;
-        this.playerCharacter.currentAttackPower += this.playerCharacter.attackPower;
+        this.hero.currentAttackPower += this.hero.attackPower;
 
-        console.log("You attacked " + this.currentEnemy.name + " for " + damage + " damage");
+        var message = "You attacked " + this.currentEnemy.name + " for " + damage + " damage";
+        game.writeMessage(message, "player", true);
     },
 
     enemyAttack: function () {
         var damage = this.currentEnemy.counterAttackPower;
-        this.playerCharacter.healthPoints -= damage;
-        console.log(this.currentEnemy.name + " attacked you for " + damage + " damage");
+        this.hero.healthPoints -= damage;
+        var message = this.currentEnemy.name + " attacked you for " + damage + " damage";
+        game.writeMessage(message, "enemy", false);
     },
 
     isPlayerDefeated: function () {
-        return this.playerCharacter.healthPoints <= 0;
+        return this.hero.healthPoints <= 0;
     },
 
     isCurrentEnemyDefeated: function () {
@@ -174,6 +178,7 @@ var game = {
             .data("slug", character.slug)
 
         cover.append(this.characterImage(character, "small"));
+        cover.append($("<p>").text("HP " + character.healthPoints));
 
         return cover;
     },
@@ -190,13 +195,52 @@ var game = {
     },
 
     displayHero: function () {
+        $('#hero img').remove();
         $('#hero').append(this.characterHeader(this.hero));
         $("#hero").append(this.characterImage(this.hero, "hero"));
     },
 
     displayEnemy: function () {
+        $('#enemy img').remove();
         $('#enemy').append(this.characterHeader(this.currentEnemy));
         $("#enemy").append(this.characterImage(this.currentEnemy, "enemy"));
+    },
+
+    setPlaceholder: function (container) {
+        var placeholder = $("<img>").attr("src", game.ui.imagesDirectory + "placeholder.png");
+        container.html(placeholder);
+    },
+
+    shakeCharacterImage: function (image) {
+        var goLeft = true;
+        var times = 5;
+        image.css("position", "relative");
+        var interval = setInterval(function () {
+            if (times > 0) {
+                if (goLeft) {
+                    image.css("left", "10px");
+                } else {
+                    image.css("left", "0px");
+                }
+
+                goLeft = !goLeft;
+                times--;
+            } else {
+                clearInterval(interval);
+            }
+        }, 30);
+    },
+
+    writeMessage: function (text, messageClass, wipeMessages) {
+        if (wipeMessages === true) {
+            $("#messages div").remove();
+        }
+
+        var message = $("<div>")
+            .addClass(messageClass)
+            .text(text);
+
+        $("#messages").append(message);
     }
 }
 

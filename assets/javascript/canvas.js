@@ -6,7 +6,7 @@ var canvas = document.getElementById('canvas'),
   w = canvas.width = window.innerWidth,
   h = canvas.height = window.innerHeight,
 
-  hue = 10,
+  hue = 270,
   stars = [],
   count = 0,
   maxStars = 1400;
