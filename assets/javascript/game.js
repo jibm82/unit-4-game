@@ -53,7 +53,7 @@ var game = {
         });
 
         $("#attack").click(function () {
-            if (game.hero !== undefined && game.currentEnemy !== undefined) {
+            if (game.animationInProgress === false && game.hero !== undefined && game.currentEnemy !== undefined) {
                 game.playerAttack();
                 if (game.isCurrentEnemyDefeated()) {
                     var message = 'You defeated ' + game.currentEnemy.name;
@@ -67,24 +67,24 @@ var game = {
 
                     game.currentEnemy = undefined;
                     game.setPlaceholder($("#enemy"));
+
+                    game.checkIfGameIsOver();
                 } else {
-                    game.enemyAttack();
-                }
 
-                if (game.isPlayerDefeated()) {
-                    var message = 'You were defeated by ' + game.currentEnemy.name;
-                    game.writeMessage(message, "enemy", false);
+                    //Timeout for animations
+                    setTimeout(function () {
+                        game.enemyAttack();
 
-                    game.hero = undefined;
-                    game.setPlaceholder($("#hero"));
-                }
+                        if (game.isPlayerDefeated()) {
+                            var message = 'You were defeated by ' + game.currentEnemy.name;
+                            game.writeMessage(message, "enemy", false);
 
-                if (game.isGameOver()) {
-                    $("#characters .character").remove();
-                    $("#attack").addClass("hidden");
-                    $("#reset").removeClass("hidden");
-                    var message = 'Press the reset button to start a new game'
-                    game.writeMessage(message, "", false);
+                            game.hero = undefined;
+                            game.setPlaceholder($("#hero"));
+                        }
+
+                        game.checkIfGameIsOver();
+                    }, 500);
                 }
             }
         });
@@ -96,6 +96,7 @@ var game = {
 
     reset: function () {
         // Variables reset
+        this.animationInProgress = false;
         this.currentEnemy = undefined;
         this.hero = undefined;
         this.selectableEnemies = [];
@@ -111,6 +112,16 @@ var game = {
         $.each(this.characters, function (index, character) {
             $("#characters").append(game.characterCover(index, character));
         });
+    },
+
+    checkIfGameIsOver: function () {
+        if (game.isGameOver()) {
+            $("#characters .character").remove();
+            $("#attack").addClass("hidden");
+            $("#reset").removeClass("hidden");
+            var message = 'Press the reset button to start a new game'
+            game.writeMessage(message, "", false);
+        }
     },
 
     cloneCharacter: function (character) {
@@ -167,6 +178,8 @@ var game = {
 
         this.updateCharacterHealthPoints($("#enemy"), this.currentEnemy.healthPoints);
 
+        this.shakeCharacterImage($("#enemy img"));
+
         var message = "You attacked " + this.currentEnemy.name + " for " + damage + " damage";
         game.writeMessage(message, "player", true);
     },
@@ -176,6 +189,8 @@ var game = {
         this.hero.healthPoints -= damage;
 
         this.updateCharacterHealthPoints($("#hero"), this.hero.healthPoints);
+
+        this.shakeCharacterImage($("#hero img"));
 
         var message = this.currentEnemy.name + " attacked you for " + damage + " damage";
         game.writeMessage(message, "enemy", false);
@@ -237,6 +252,7 @@ var game = {
     },
 
     shakeCharacterImage: function (image) {
+        game.animationInProgress = true;
         var goLeft = true;
         var times = 5;
         image.css("position", "relative");
@@ -252,6 +268,7 @@ var game = {
                 times--;
             } else {
                 clearInterval(interval);
+                game.animationInProgress = false;
             }
         }, 30);
     },
