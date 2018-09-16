@@ -2,8 +2,8 @@
 
 html,
 body {
-    height: 100%;
     font-family: Quantico;
+    height: 100%;
 }
 
 body {
@@ -11,6 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-shadow: 0px 0px 10px #fff;
 
     /* Prevent text selection */
     -webkit-user-select: none; /* Safari */        
@@ -19,9 +20,11 @@ body {
     user-select: none; 
 }
 
+/* Element styling */
+
 canvas {
-    position: absolute;
     height: 100%;
+    position: absolute;
     top: 0px;
     width: 100%;
     z-index: -1;
@@ -37,6 +40,8 @@ main {
 img {
     width: 100%;
 }
+
+/* Logo styling */
 
 #logo {
     text-align: center;
@@ -55,7 +60,10 @@ h1 {
     border-top: 1px solid yellow;
     color: yellow;
     margin-top: 5px;
+    text-shadow: none;
 }
+
+/* Combat area styling */
 
 #combat-area {
     display: flex;
@@ -71,6 +79,8 @@ h1 {
 #enemy h3{
     text-align: right;
 }
+
+/* Actions area styling */
 
 #actions {
     display: flex;
@@ -107,13 +117,19 @@ h1 {
     text-align: center;
 }
 
+#attack:hover,
 #messages .player {
-    color: green;
+    color: #2FF923;
+    text-shadow: 0px 0px 10px #2FF923;
+
 }
 
 #messages .enemy {
-    color: red;
+    color: #a32121;
+    text-shadow: 0px 0px 10px #a32121;
 }
+
+/* Character selection area styling */
 
 #characters {
     display: flex;
@@ -135,7 +151,7 @@ h1 {
     opacity: 1;
 }
 
-/* Utility classes */
+/* Utility class */
 
 .hidden {
     display: none;
