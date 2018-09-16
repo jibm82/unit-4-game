@@ -60,9 +60,8 @@ var game = {
 
                     if (game.selectableEnemies.length > 0) {
                         message += ", choose another enemy";
-                    } else {
-                        message += ", you win";
                     }
+
                     game.writeMessage(message, "player", false);
 
                     game.currentEnemy = undefined;
@@ -76,9 +75,6 @@ var game = {
                         game.enemyAttack();
 
                         if (game.isPlayerDefeated()) {
-                            var message = 'You were defeated by ' + game.currentEnemy.name;
-                            game.writeMessage(message, "enemy", false);
-
                             game.hero = undefined;
                             game.setPlaceholder($("#hero"));
                         }
@@ -115,12 +111,27 @@ var game = {
     },
 
     checkIfGameIsOver: function () {
-        if (game.isGameOver()) {
+        if (this.isGameOver()) {
             $("#characters .character").remove();
             $("#attack").addClass("hidden");
             $("#reset").removeClass("hidden");
-            var message = 'Press the reset button to start a new game'
-            game.writeMessage(message, "", false);
+
+            var message = "";
+            var messageClass = "";
+
+            if (game.hero !== undefined) {
+                message = "You Win!";
+                messageClass = "player";
+
+            } else {
+                message = "You Lose!";
+                messageClass = "enemy";
+            }
+            game.writeMessage(message, "big " + messageClass, true);
+
+            message = 'Press the reset button to start a new game'
+            game.writeMessage(message, "medium", false);
+            ;
         }
     },
 
@@ -168,7 +179,7 @@ var game = {
             return game.currentEnemy.name !== enemy.name;
         });
         $("#attack").removeClass("hidden");
-        game.writeMessage("FIGHT", "big", true);
+        game.writeMessage("Press the attack button to start fighting", "medium", true);
     },
 
     playerAttack: function () {
