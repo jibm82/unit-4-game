@@ -112,6 +112,7 @@ var game = {
 
     checkIfGameIsOver: function () {
         if (this.isGameOver()) {
+
             $("#characters .character").remove();
             $("#attack").addClass("hidden");
             $("#reset").removeClass("hidden");
@@ -131,7 +132,6 @@ var game = {
 
             message = 'Press the reset button to start a new game'
             game.writeMessage(message, "medium", false);
-            ;
         }
     },
 
@@ -235,7 +235,7 @@ var game = {
     },
 
     characterHeader: function (character) {
-        return $("<h3>").html(character.name + " - HP <span class='hp'>" + character.healthPoints + "</span>");
+        return $("<h3>").html(character.name + "<br/>HP <span class='hp'>" + character.healthPoints + "</span>");
     },
 
     characterImage: function (character, version) {
